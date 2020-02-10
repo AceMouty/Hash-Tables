@@ -4,7 +4,7 @@ class DynamicArray:
         self.capacity = capacity
         self.storage = [None] * self.capacity
 
-    def insert(self, value, index):        
+    def insert(self, value, index):
         if self.count == self.capacity:
             # TODO: INCREASE SIZE
             print("ERROR ARRAY IS FULL")
