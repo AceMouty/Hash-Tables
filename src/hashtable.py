@@ -1,11 +1,14 @@
 # '''
 # Linked List hash table key/value pair
 # '''
+
+
 class LinkedPair:
     def __init__(self, key, value):
         self.key = key
         self.value = value
         self.next = None
+
 
 class HashTable:
     '''
@@ -15,7 +18,7 @@ class HashTable:
     def __init__(self, capacity):
         self.capacity = capacity  # Number of buckets in the hash table
         self.storage = [None] * capacity
-
+        self.curren_index = 0
 
     def _hash(self, key):
         '''
@@ -25,7 +28,6 @@ class HashTable:
         '''
         return hash(key)
 
-
     def _hash_djb2(self, key):
         '''
         Hash an arbitrary key using DJB2 hash
@@ -34,14 +36,12 @@ class HashTable:
         '''
         pass
 
-
     def _hash_mod(self, key):
         '''
         Take an arbitrary key and return a valid integer index
         within the storage capacity of the hash table.
         '''
         return self._hash(key) % self.capacity
-
 
     def insert(self, key, value):
         '''
@@ -51,9 +51,20 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
-
-
+        # count / index before we incrament
+        current_index = self.curren_index
+        if current_index > self.capacity:
+            print("ERROR: Unable to add items to the hashtable")
+            return
+        else:
+            # hash and moulo to store at an index
+            hash_index = hash(key) % self.capacity  # 1
+            if self.storage[hash_index] is not None:
+                print("WARNING: There Is A Value In The Current Index Of The Provided Hash")
+                return
+            else:
+                self.storage[hash_index] = value  # self.storage[2] = value
+                self.curren_index += 1
 
     def remove(self, key):
         '''
@@ -63,8 +74,11 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
-
+        hashed_index = hash(key) % self.capacity
+        hashed_value = self.storage[hashed_index]
+        self.storage[hashed_index] = None
+        # self.curren_index = hashed_index
+        return hashed_value
 
     def retrieve(self, key):
         '''
@@ -74,8 +88,11 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
-
+        hashed_index = hash(key) % self.capacity
+        if self.storage[hashed_index] is None:
+            print("ERROR: That Entry Does Not Exist")
+        else:
+            return self.storage[hashed_index]
 
     def resize(self):
         '''
@@ -84,8 +101,16 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        old_capacity = self.capacity  # 2
+        self.capacity *= 2  # 16
 
+        new_storage = [None] * self.capacity  # None 16x in an array
+
+        for i in range(old_capacity):
+            new_storage[i] = self.storage[i]
+
+        self.storage = new_storage
+        print(self.storage)
 
 
 if __name__ == "__main__":
@@ -93,14 +118,14 @@ if __name__ == "__main__":
 
     ht.insert("line_1", "Tiny hash table")
     ht.insert("line_2", "Filled beyond capacity")
-    ht.insert("line_3", "Linked list saves the day!")
+    # ht.insert("line_3", "Linked list saves the day!")
 
     print("")
 
     # Test storing beyond capacity
     print(ht.retrieve("line_1"))
     print(ht.retrieve("line_2"))
-    print(ht.retrieve("line_3"))
+    # print(ht.retrieve("line_3"))
 
     # Test resizing
     old_capacity = len(ht.storage)
@@ -112,6 +137,6 @@ if __name__ == "__main__":
     # Test if data intact after resizing
     print(ht.retrieve("line_1"))
     print(ht.retrieve("line_2"))
-    print(ht.retrieve("line_3"))
+    # print(ht.retrieve("line_3"))
 
     print("")
